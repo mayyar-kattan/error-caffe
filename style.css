@@ -625,3 +625,14 @@ header.nav-hidden {
 .menu-section {
     background: linear-gradient( 180deg, #151515 0%, #0b0b0b 100%);
 }
+.social-svg {
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
+.instagram-svg {
+    color: #e1306c;
+}
