@@ -636,6 +636,19 @@ header.nav-hidden {
 .instagram-svg {
     color: #e1306c;
 }
+
 .facebook-svg {
     color: #1877F2;
+}
+
+.location-svg {
+    color: #EA4335;
+}
+
+.whatsapp-svg {
+    color: #25D366;
+}
+
+.phone-svg {
+    color: #FFD200;
 }
