@@ -378,46 +378,6 @@ footer h2 {
     }
 }
 
-.insta-icon {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: xx-large;
-}
-
-.location {
-    background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: xx-large;
-}
-
-.icon-facebook {
-    background: linear-gradient(135deg, #1877F2, #4267B2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: xx-large;
-}
-
-.whatssup {
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: xx-large;
-}
-
-.call {
-    background: linear-gradient(135deg, #F7971E, #FFD200);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: large;
-}
-
 
 /* ===========================
    ERROR SPLASH SCREEN
@@ -625,6 +585,7 @@ header.nav-hidden {
 .menu-section {
     background: linear-gradient( 180deg, #151515 0%, #0b0b0b 100%);
 }
+
 .social-svg {
     width: 36px;
     height: 36px;
@@ -651,4 +612,194 @@ header.nav-hidden {
 
 .phone-svg {
     color: #FFD200;
+}
+
+.cart-icon {
+    position: relative;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#cartCount {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #ff3c3c;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ===============================
+   CART POPUP
+================================ */
+
+.cart-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.cart-box {
+    width: 100%;
+    max-width: 450px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    color: white;
+}
+
+.cart-box h2 {
+    margin-bottom: 20px;
+}
+
+.close-cart {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-info h4 {
+    margin: 0 0 5px;
+}
+
+.cart-item-info p {
+    margin: 0;
+    font-size: 14px;
+    opacity: .7;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-controls button {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.checkout-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #25D366;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+/* ===============================
+   TABLE POPUP
+================================ */
+
+.table-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.table-box {
+    width: 100%;
+    max-width: 400px;
+    background: #111;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.table-box h2 {
+    margin-bottom: 10px;
+}
+
+.table-box p {
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+#tableNumber {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: #222;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    outline: none;
+}
+
+.close-table {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
 }
