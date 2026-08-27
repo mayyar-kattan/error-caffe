@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Error Caffe - Admin</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ===============================
+         ADMIN LOGIN
+    =============================== -->
+
+    <div class="admin-login">
+
+        <div class="admin-login-box">
+
+            <img src="images/logo.png" alt="Error Caffe">
+
+            <h2>Admin Login</h2>
+
+            <p>Enter your username and password</p>
+
+            <input
+                type="text"
+                id="adminUsername"
+                placeholder="Username"
+            >
+
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Password"
+            >
+
+            <button id="adminLoginBtn">
+                Login
+            </button>
+
+            <p id="loginError"></p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===============================
+         ADMIN LOGIN SCRIPT
+    =============================== -->
+
+    <script>
+
+        const username = "admin";
+        const password = "1234";
+
+        const loginButton = document.getElementById("adminLoginBtn");
+
+        loginButton.addEventListener("click", function() {
+
+            const enteredUsername =
+                document.getElementById("adminUsername").value.trim();
+
+            const enteredPassword =
+                document.getElementById("adminPassword").value;
+
+            const loginError =
+                document.getElementById("loginError");
+
+
+            if (
+                enteredUsername === username &&
+                enteredPassword === password
+            ) {
+
+                window.location.href = "admin-dashboard.html";
+
+            } else {
+
+                loginError.innerText =
+                    "Invalid username or password";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

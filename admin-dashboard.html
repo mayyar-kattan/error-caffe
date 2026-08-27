@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Error Caffe - Admin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body class="admin-dashboard-body">
+
+
+    <!-- ===============================
+         ADMIN DASHBOARD
+    ================================ -->
+
+    <div class="admin-dashboard">
+
+        <!-- HEADER -->
+
+        <div class="admin-header">
+
+            <div>
+
+                <h1>
+                    Error Caffe
+                </h1>
+
+                <p>
+                    Admin Dashboard
+                </p>
+
+            </div>
+
+
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+
+        <!-- ===============================
+             DATE
+        ================================ -->
+
+        <div class="date-box">
+
+            <h2 id="todayDate">
+                Loading...
+            </h2>
+
+            <p id="currentMonth">
+                Loading...
+            </p>
+
+            <p id="currentYear">
+                Loading...
+            </p>
+
+        </div>
+
+
+        <!-- ===============================
+             STATISTICS
+        ================================ -->
+
+        <div class="admin-stats">
+
+            <div class="stat-card">
+
+                <span>
+                    🛒
+                </span>
+
+                <h3 id="ordersToday">
+                    0
+                </h3>
+
+                <p>
+                    Orders Today
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    💰
+                </span>
+
+                <h3 id="salesToday">
+                    0 SYP
+                </h3>
+
+                <p>
+                    Sales Today
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    🪑
+                </span>
+
+                <h3 id="tablesToday">
+                    0
+                </h3>
+
+                <p>
+                    Tables Today
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===============================
+             ORDERS
+        ================================ -->
+
+        <div class="orders-section">
+
+            <div class="orders-header">
+
+                <h2>
+                    Today's Orders 📋
+                </h2>
+
+                <button
+                    id="clearOrdersBtn"
+                    class="clear-orders-btn"
+                >
+                    Clear Today's Orders
+                </button>
+
+            </div>
+
+
+            <div id="ordersContainer">
+
+                <p class="no-orders">
+                    No orders today.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- BACK TO MENU -->
+
+        <a
+            href="index.html"
+            class="back-menu"
+        >
+            ← Back to Menu
+        </a>
+
+    </div>
+
+
+    <!-- ===============================
+         JAVASCRIPT
+    ================================ -->
+
+    <script>
+
+        // ===============================
+        // GET ORDERS
+        // ===============================
+
+        function getOrders() {
+
+            return JSON.parse(
+                localStorage.getItem("orders")
+            ) || [];
+
+        }
+
+
+        // ===============================
+        // TODAY
+        // ===============================
+
+        const now = new Date();
+
+        const today =
+            now.toISOString().split("T")[0];
+
+
+        // ===============================
+        // REAL DATE
+        // ===============================
+
+        document.getElementById("todayDate").innerText =
+            now.toLocaleDateString("en-GB", {
+
+                day: "2-digit",
+
+                month: "2-digit",
+
+                year: "numeric"
+
+            });
+
+
+        document.getElementById("currentMonth").innerText =
+            now.toLocaleDateString("en-US", {
+
+                month: "long",
+
+                year: "numeric"
+
+            });
+
+
+        document.getElementById("currentYear").innerText =
+            now.getFullYear();
+
+
+        // ===============================
+        // DISPLAY ORDERS
+        // ===============================
+
+        function renderDashboard() {
+
+            const orders = getOrders();
+
+
+            // Only today's orders
+
+            const todayOrders =
+                orders.filter(order => {
+
+                    return order.date === today;
+
+                });
+
+
+            // ===============================
+            // ORDERS COUNT
+            // ===============================
+
+            document.getElementById(
+                "ordersToday"
+            ).innerText = todayOrders.length;
+
+
+            // ===============================
+            // SALES
+            // ===============================
+
+            let sales = 0;
+
+
+            todayOrders.forEach(order => {
+
+                sales += Number(order.total) || 0;
+
+            });
+
+
+            document.getElementById(
+                "salesToday"
+            ).innerText =
+                sales.toLocaleString() + " SYP";
+
+
+            // ===============================
+            // TABLES
+            // ===============================
+
+            const uniqueTables =
+                new Set(
+                    todayOrders.map(order => order.table)
+                );
+
+
+            document.getElementById(
+                "tablesToday"
+            ).innerText =
+                uniqueTables.size;
+
+
+            // ===============================
+            // ORDERS CONTAINER
+            // ===============================
+
+            const container =
+                document.getElementById(
+                    "ordersContainer"
+                );
+
+
+            container.innerHTML = "";
+
+
+            if (todayOrders.length === 0) {
+
+                container.innerHTML = `
+
+                    <p class="no-orders">
+                        No orders today.
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+
+            // ===============================
+            // SHOW ORDERS
+            // ===============================
+
+            todayOrders
+                .slice()
+                .reverse()
+                .forEach((order, index) => {
+
+                    container.innerHTML += `
+
+                        <div class="admin-order">
+
+                            <div class="order-top">
+
+                                <h3>
+                                    Order #${todayOrders.length - index}
+                                </h3>
+
+                                <span>
+                                    ⏰ ${order.time}
+                                </span>
+
+                            </div>
+
+
+                            <div class="order-info">
+
+                                <p>
+                                    🪑 Table:
+                                    <strong>
+                                        ${order.table}
+                                    </strong>
+                                </p>
+
+
+                                <p>
+                                    🛒 ${order.items}
+                                </p>
+
+
+                                <p class="order-price">
+                                    💰 ${Number(order.total).toLocaleString()} SYP
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                });
+
+        }
+
+
+        // ===============================
+        // INITIAL LOAD
+        // ===============================
+
+        renderDashboard();
+
+
+        // ===============================
+        // AUTO REFRESH
+        // ===============================
+
+        setInterval(() => {
+
+            renderDashboard();
+
+        }, 3000);
+
+
+        // ===============================
+        // CLEAR TODAY'S ORDERS
+        // ===============================
+
+        document
+            .getElementById("clearOrdersBtn")
+            .addEventListener("click", function() {
+
+                const confirmDelete =
+                    confirm(
+                        "Are you sure you want to delete today's orders?"
+                    );
+
+
+                if (!confirmDelete) {
+
+                    return;
+
+                }
+
+
+                const orders = getOrders();
+
+
+                const remainingOrders =
+                    orders.filter(order => {
+
+                        return order.date !== today;
+
+                    });
+
+
+                localStorage.setItem(
+                    "orders",
+                    JSON.stringify(remainingOrders)
+                );
+
+
+                renderDashboard();
+
+            });
+
+
+        // ===============================
+        // LOGOUT
+        // ===============================
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener("click", function() {
+
+                window.location.href =
+                    "admin.html";
+
+            });
+
+    </script>
+
+
+</body>
+
+</html>
