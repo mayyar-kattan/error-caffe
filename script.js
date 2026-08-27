@@ -63,6 +63,14 @@ const drinks = [{
 ];
 
 // ===============================
+// CART
+// ===============================
+
+let cart = [];
+
+const cartCount = document.getElementById("cartCount");
+
+// ===============================
 // CREATE CARD
 // ===============================
 
@@ -86,7 +94,14 @@ function createCards(data, containerId) {
 
                 <div class="price">${item.price}</div>
 
-                <button class="order-btn">Order Now</button>
+                <button 
+                    class="order-btn"
+                    data-name="${item.name}"
+                    data-description="${item.description}"
+                    data-price="${item.price}"
+                    data-image="${item.image}">
+                    Add to Cart
+                </button>
 
             </div>
 
@@ -107,10 +122,6 @@ createCards(pizzas, "pizzaCards");
 createCards(drinks, "drinkCards");
 
 // ===============================
-// NAVBAR EFFECT
-// ===============================
-
-// ===============================
 // NAVBAR HIDE / SHOW ON SCROLL
 // ===============================
 
@@ -122,22 +133,21 @@ window.addEventListener("scroll", () => {
 
     const currentScrollY = window.scrollY;
 
-    // Background
     if (currentScrollY > 100) {
+
         header.style.background = "#000";
+
     } else {
+
         header.style.background = "rgba(0,0,0,.75)";
+
     }
 
-    // Hide when scrolling down
     if (currentScrollY > lastScrollY && currentScrollY > 100) {
 
         header.classList.add("nav-hidden");
 
-    }
-
-    // Show when scrolling up
-    else if (currentScrollY < lastScrollY) {
+    } else if (currentScrollY < lastScrollY) {
 
         header.classList.remove("nav-hidden");
 
@@ -148,7 +158,7 @@ window.addEventListener("scroll", () => {
 });
 
 // ===============================
-// ORDER BUTTON
+// ORDER BUTTON + CART
 // ===============================
 
 const popup = document.getElementById("popup");
@@ -165,15 +175,48 @@ document.addEventListener("click", (e) => {
 
     if (e.target.classList.contains("order-btn")) {
 
-        const card = e.target.closest(".card");
+        const name = e.target.dataset.name;
+        const description = e.target.dataset.description;
+        const price = e.target.dataset.price;
+        const image = e.target.dataset.image;
 
-        popupImage.src = card.querySelector("img").src;
+        // ===============================
+        // ADD PRODUCT TO CART
+        // ===============================
 
-        popupTitle.innerText = card.querySelector("h3").innerText;
+        const existingProduct = cart.find(item => item.name === name);
 
-        popupDescription.innerText = card.querySelector("p").innerText;
+        if (existingProduct) {
 
-        popupPrice.innerText = card.querySelector(".price").innerText;
+            existingProduct.quantity++;
+
+        } else {
+
+            cart.push({
+                name: name,
+                description: description,
+                price: price,
+                image: image,
+                quantity: 1
+            });
+
+        }
+
+        // Update cart number
+
+        updateCartCount();
+
+        // ===============================
+        // OPEN PRODUCT POPUP
+        // ===============================
+
+        popupImage.src = image;
+
+        popupTitle.innerText = name;
+
+        popupDescription.innerText = description;
+
+        popupPrice.innerText = price;
 
         popup.style.display = "flex";
 
@@ -181,24 +224,47 @@ document.addEventListener("click", (e) => {
 
 });
 
+// ===============================
+// UPDATE CART COUNT
+// ===============================
+
+function updateCartCount() {
+
+    let totalItems = 0;
+
+    cart.forEach(item => {
+
+        totalItems += item.quantity;
+
+    });
+
+    cartCount.innerText = totalItems;
+
+}
+
+// ===============================
+// CLOSE POPUP
+// ===============================
+
 document.querySelector(".close").onclick = function() {
 
     popup.style.display = "none";
 
-}
+};
 
-window.onclick = function(e) {
+window.addEventListener("click", function(e) {
 
-        if (e.target == popup) {
+    if (e.target === popup) {
 
-            popup.style.display = "none";
-
-        }
+        popup.style.display = "none";
 
     }
-    // ===============================
-    // ERROR SPLASH
-    // ===============================
+
+});
+
+// ===============================
+// ERROR SPLASH
+// ===============================
 
 window.addEventListener("load", () => {
 
@@ -209,5 +275,387 @@ window.addEventListener("load", () => {
         splash.classList.add("hide");
 
     }, 2500);
+
+});
+// ===============================
+// CART WINDOW
+// ===============================
+
+const cartIcon = document.querySelector(".cart-icon");
+
+const cartPopup = document.getElementById("cartPopup");
+
+const closeCart = document.getElementById("closeCart");
+
+const cartItems = document.getElementById("cartItems");
+
+const cartTotal = document.getElementById("cartTotal");
+
+
+// Open Cart
+
+cartIcon.addEventListener("click", () => {
+
+    renderCart();
+
+    cartPopup.style.display = "flex";
+
+});
+
+
+// ===============================
+// CLOSE CART
+// ===============================
+
+closeCart.addEventListener("click", function() {
+
+    cartPopup.style.display = "none";
+
+});
+
+
+// Close when clicking outside
+
+cartPopup.addEventListener("click", (e) => {
+
+    if (e.target === cartPopup) {
+
+        cartPopup.style.display = "none";
+
+    }
+
+});
+
+
+// ===============================
+// DISPLAY CART
+// ===============================
+
+function renderCart() {
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML = `
+            <p style="text-align:center; opacity:.6;">
+                Your cart is empty 🛒
+            </p>
+        `;
+
+        cartTotal.innerText = "0 SYP";
+
+        return;
+    }
+
+
+    cart.forEach((item, index) => {
+
+        // Convert price from "15,000 SYP" to number
+
+        const priceNumber = parseInt(
+            item.price.replace(/[^0-9]/g, "")
+        );
+
+        const itemTotal = priceNumber * item.quantity;
+
+        total += itemTotal;
+
+
+        cartItems.innerHTML += `
+
+            <div class="cart-item">
+
+                <img src="${item.image}" alt="${item.name}">
+
+                <div class="cart-item-info">
+
+                    <h4>${item.name}</h4>
+
+                    <p>${item.price}</p>
+
+                </div>
+
+
+                <div class="quantity-controls">
+
+                    <button onclick="decreaseQuantity(${index})">
+                        −
+                    </button>
+
+                    <span>${item.quantity}</span>
+
+                    <button onclick="increaseQuantity(${index})">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+
+    cartTotal.innerText =
+        total.toLocaleString() + " SYP";
+
+}
+
+
+// ===============================
+// INCREASE QUANTITY
+// ===============================
+
+function increaseQuantity(index) {
+
+    cart[index].quantity++;
+
+    updateCartCount();
+
+    renderCart();
+
+}
+
+
+// ===============================
+// DECREASE QUANTITY
+// ===============================
+
+function decreaseQuantity(index) {
+
+    cart[index].quantity--;
+
+    if (cart[index].quantity <= 0) {
+
+        cart.splice(index, 1);
+
+    }
+
+    updateCartCount();
+
+    renderCart();
+
+}
+// ===============================
+// TABLE NUMBER
+// ===============================
+
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+const tablePopup = document.getElementById("tablePopup");
+
+const tableContinue = document.getElementById("tableContinue");
+
+const tableNumber = document.getElementById("tableNumber");
+
+
+// ===============================
+// OPEN TABLE POPUP
+// ===============================
+
+checkoutBtn.addEventListener("click", function() {
+
+    if (cart.length === 0) {
+
+        alert("Your cart is empty!");
+
+        return;
+
+    }
+
+    document.getElementById("cartPopup").style.display = "none";
+
+    tablePopup.style.display = "flex";
+
+    tableNumber.value = "";
+
+    tableNumber.focus();
+
+});
+
+
+// ===============================
+// CONTINUE
+// ===============================
+
+const orderPopup = document.getElementById("orderPopup");
+
+const orderTable = document.getElementById("orderTable");
+
+const orderSummary = document.getElementById("orderSummary");
+
+const orderTotal = document.getElementById("orderTotal");
+
+
+let selectedTable = null;
+
+
+tableContinue.addEventListener("click", function() {
+
+    const number = tableNumber.value.trim();
+
+
+    // Table number is required
+
+    if (number === "" || Number(number) < 1) {
+
+        alert("Please enter your table number.");
+
+        tableNumber.focus();
+
+        return;
+
+    }
+
+
+    // Save table number
+
+    selectedTable = number;
+
+
+    // Close table popup
+
+    tablePopup.style.display = "none";
+
+
+    // Table number
+
+    orderTable.innerText =
+        "Table Number: " + selectedTable;
+
+
+    // Create order summary
+
+    orderSummary.innerHTML = "";
+
+
+    let total = 0;
+
+
+    cart.forEach(function(item) {
+
+        const priceNumber = parseInt(
+            item.price.replace(/[^0-9]/g, "")
+        );
+
+
+        const itemTotal =
+            priceNumber * item.quantity;
+
+
+        total += itemTotal;
+
+
+        orderSummary.innerHTML += `
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin:10px 0;
+            ">
+
+                <span>
+                    ${item.name} × ${item.quantity}
+                </span>
+
+                <span>
+                    ${itemTotal.toLocaleString()} SYP
+                </span>
+
+            </div>
+
+        `;
+
+    });
+
+
+    // Total
+
+    orderTotal.innerText =
+        total.toLocaleString() + " SYP";
+
+
+    // Show confirmation
+
+    orderPopup.style.display = "flex";
+
+});
+// ===============================
+// CONFIRM ORDER - WHATSAPP
+// ===============================
+
+const confirmOrder = document.getElementById("confirmOrder");
+
+confirmOrder.addEventListener("click", function() {
+
+    if (!selectedTable || cart.length === 0) {
+
+        alert("Please complete your order first.");
+
+        return;
+
+    }
+
+
+    let message = "🛎️ *NEW ORDER*%0A%0A";
+
+    message += "🪑 *Table:* " + selectedTable + "%0A%0A";
+
+
+    let total = 0;
+
+
+    cart.forEach(function(item) {
+
+        const priceNumber = parseInt(
+            item.price.replace(/[^0-9]/g, "")
+        );
+
+        const itemTotal =
+            priceNumber * item.quantity;
+
+        total += itemTotal;
+
+
+        message +=
+            "🍽️ " +
+            item.name +
+            " × " +
+            item.quantity +
+            " — " +
+            itemTotal.toLocaleString() +
+            " SYP%0A";
+
+    });
+
+
+    message += "%0A💰 *Total (Without Taxes !):* " +
+        total.toLocaleString() +
+        " SYP";
+
+
+    // WhatsApp number
+
+    const phoneNumber = "+963991048151";
+
+
+    // Open WhatsApp
+
+    const whatsappURL =
+        "https://wa.me/" +
+        phoneNumber +
+        "?text=" +
+        message;
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
 
 });
