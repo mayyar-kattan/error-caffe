@@ -40,10 +40,7 @@
             </div>
 
 
-            <button
-                id="logoutBtn"
-                class="logout-btn"
-            >
+            <button id="logoutBtn" class="logout-btn">
                 Logout
             </button>
 
@@ -142,10 +139,7 @@
                     Today's Orders 📋
                 </h2>
 
-                <button
-                    id="clearOrdersBtn"
-                    class="clear-orders-btn"
-                >
+                <button id="clearOrdersBtn" class="clear-orders-btn">
                     Clear Today's Orders
                 </button>
 
@@ -165,10 +159,7 @@
 
         <!-- BACK TO MENU -->
 
-        <a
-            href="index.html"
-            class="back-menu"
-        >
+        <a href="index.html" class="back-menu">
             ← Back to Menu
         </a>
 
@@ -180,7 +171,6 @@
     ================================ -->
 
     <script>
-
         // ===============================
         // GET ORDERS
         // ===============================
@@ -200,8 +190,26 @@
 
         const now = new Date();
 
+
+        /*
+         * IMPORTANT:
+         * Use LOCAL date instead of toISOString().
+         *
+         * This prevents the date from changing
+         * around midnight because toISOString()
+         * uses UTC time.
+         */
+
         const today =
-            now.toISOString().split("T")[0];
+            now.getFullYear() +
+            "-" +
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0") +
+            "-" +
+            String(
+                now.getDate()
+            ).padStart(2, "0");
 
 
         // ===============================
@@ -243,10 +251,12 @@
             const orders = getOrders();
 
 
-            // Only today's orders
+            // ===============================
+            // ONLY TODAY'S ORDERS
+            // ===============================
 
             const todayOrders =
-                orders.filter(order => {
+                orders.filter(function(order) {
 
                     return order.date === today;
 
@@ -258,8 +268,9 @@
             // ===============================
 
             document.getElementById(
-                "ordersToday"
-            ).innerText = todayOrders.length;
+                    "ordersToday"
+                ).innerText =
+                todayOrders.length;
 
 
             // ===============================
@@ -269,17 +280,19 @@
             let sales = 0;
 
 
-            todayOrders.forEach(order => {
+            todayOrders.forEach(function(order) {
 
-                sales += Number(order.total) || 0;
+                sales +=
+                    Number(order.total) || 0;
 
             });
 
 
             document.getElementById(
-                "salesToday"
-            ).innerText =
-                sales.toLocaleString() + " SYP";
+                    "salesToday"
+                ).innerText =
+                sales.toLocaleString() +
+                " SYP";
 
 
             // ===============================
@@ -288,13 +301,17 @@
 
             const uniqueTables =
                 new Set(
-                    todayOrders.map(order => order.table)
+                    todayOrders.map(function(order) {
+
+                        return order.table;
+
+                    })
                 );
 
 
             document.getElementById(
-                "tablesToday"
-            ).innerText =
+                    "tablesToday"
+                ).innerText =
                 uniqueTables.size;
 
 
@@ -308,8 +325,13 @@
                 );
 
 
-            container.innerHTML = "";
+            container.innerHTML =
+                "";
 
+
+            // ===============================
+            // NO ORDERS
+            // ===============================
 
             if (todayOrders.length === 0) {
 
@@ -333,7 +355,7 @@
             todayOrders
                 .slice()
                 .reverse()
-                .forEach((order, index) => {
+                .forEach(function(order, index) {
 
                     container.innerHTML += `
 
@@ -393,7 +415,7 @@
         // AUTO REFRESH
         // ===============================
 
-        setInterval(() => {
+        setInterval(function() {
 
             renderDashboard();
 
@@ -406,41 +428,47 @@
 
         document
             .getElementById("clearOrdersBtn")
-            .addEventListener("click", function() {
+            .addEventListener(
+                "click",
+                function() {
 
-                const confirmDelete =
-                    confirm(
-                        "Are you sure you want to delete today's orders?"
+                    const confirmDelete =
+                        confirm(
+                            "Are you sure you want to delete today's orders?"
+                        );
+
+
+                    if (!confirmDelete) {
+
+                        return;
+
+                    }
+
+
+                    const orders =
+                        getOrders();
+
+
+                    const remainingOrders =
+                        orders.filter(function(order) {
+
+                            return order.date !== today;
+
+                        });
+
+
+                    localStorage.setItem(
+                        "orders",
+                        JSON.stringify(
+                            remainingOrders
+                        )
                     );
 
 
-                if (!confirmDelete) {
-
-                    return;
+                    renderDashboard();
 
                 }
-
-
-                const orders = getOrders();
-
-
-                const remainingOrders =
-                    orders.filter(order => {
-
-                        return order.date !== today;
-
-                    });
-
-
-                localStorage.setItem(
-                    "orders",
-                    JSON.stringify(remainingOrders)
-                );
-
-
-                renderDashboard();
-
-            });
+            );
 
 
         // ===============================
@@ -449,13 +477,15 @@
 
         document
             .getElementById("logoutBtn")
-            .addEventListener("click", function() {
+            .addEventListener(
+                "click",
+                function() {
 
-                window.location.href =
-                    "admin.html";
+                    window.location.href =
+                        "admin.html";
 
-            });
-
+                }
+            );
     </script>
 
 
